@@ -73,6 +73,9 @@ export default {
   watch: {
     dimension() {
       this.initMatrix()
+    },
+    limit() {
+      this.initMatrix()
     }
   },
   created() {
