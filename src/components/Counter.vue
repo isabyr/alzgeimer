@@ -11,15 +11,12 @@
     b-row
       b-col()
       b-col(md='8')
-        table(width='100%')
+        table.grid(width='100%')
           tr(v-for='(row, ridx) in matrix.length/dimension')
             td(v-for='(col, cidx) in matrix.length/dimension')
-              b-button.w-100.p-4(@click='clickCell(ridx, cidx)' variant='success')
-                span.cell() {{matrix[ridx*dimension+cidx]}}
-        //b-container(fluid)
-          b-row(v-for='(row, ridx) in matrix.length/dimension')
-            b-col.m-0.p-1(v-for='(col, cidx) in matrix.length/dimension')
-              b-button.w-100.p-4(@click='clickCell(ridx, cidx)' size='lg') {{matrix[ridx*dimension+cidx]}} 
+              b-button.w-100.p-4(@click='clickCell(ridx, cidx)' :variant='matrix[ridx*dimension+cidx]>0?"success":"warning"')
+                span.cell(v-if='matrix[ridx*dimension+cidx]>0') {{matrix[ridx*dimension+cidx]}}
+                span.cell(v-else) -
       b-col()
 </template>
 
@@ -88,5 +85,9 @@ export default {
 <style scoped>
 .cell {
   font-size: 5em;
+}
+
+.grid {
+  table-layout: fixed;
 }
 </style>
