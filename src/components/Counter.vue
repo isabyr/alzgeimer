@@ -59,7 +59,6 @@ export default {
     },
     initMatrix() {
       this.size = this.dimension*this.dimension
-      this.limit = 2*this.size
       this.matrix = []
       for(let r=0;r<this.dimension;++r) {
         for(let c=0;c<this.dimension;++c) {
