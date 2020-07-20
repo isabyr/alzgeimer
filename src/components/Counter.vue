@@ -1,20 +1,20 @@
 <template lang='pug'>
   b-container()
-    b-row
-      b-col
+    b-row.justify-content-md-center
+      b-col(md='auto')
         b-card(class='my-3')
-          b-row
-            b-col
-              b-input(v-model='dimension' min='2' max='7' type='number')
-            b-col
-              b-input(v-model='limit' type='number' :min='2*dimension*dimension')
+          b-form(inline)
+            b-input.mb-2.mr-2(v-model='dimension' style='width:4em;' min='2' max='7' type='number')
+            b-checkbox.mb-2.mr-2(v-model='reverse' @input='initMatrix') Reverse
+            b-button.mb-2.mr-2(variant='primary' @click='initMatrix')
+              b-icon-arrow-repeat
     b-row
       b-col()
       b-col(md='8')
         table.grid(width='100%')
           tr(v-for='(row, ridx) in matrix.length/dimension')
             td(v-for='(col, cidx) in matrix.length/dimension')
-              b-button.w-100.p-4(@click='clickCell(ridx, cidx)' :variant='matrix[ridx*dimension+cidx]>0?"success":"warning"')
+              b-button.w-100.p-4(@click='clickCell' :variant='matrix[ridx*dimension+cidx]>0?"success":"warning"')
                 span.cell(v-if='matrix[ridx*dimension+cidx]>0') {{matrix[ridx*dimension+cidx]}}
                 span.cell(v-else) -
       b-col()
@@ -28,26 +28,37 @@ export default {
       dimension: 3,
       size: 9,
       counter: 0,
-      limit: 18,
-      matrix: []
+      matrix: [],
+      reverse: false
     }
   },
   methods: {
+    mouseDownCell(e) {
+      alert(e.which)
+    },
     clickCell(r, c) {
       let idx = r*this.dimension+c
-      if(this.matrix[idx]==this.counter) {
-        if(this.counter+this.size>this.limit) {
-          this.$set(this.matrix, idx, '')
-        } else {
-          this.$set(this.matrix, idx, this.counter + this.size)
+      if(this.reverse) {
+        if(this.matrix[idx]==this.counter+this.size) {
+          if(this.counter<=0) this.$set(this.matrix, idx, '')
+          else this.$set(this.matrix, idx, this.counter)
+          this.counter--
         }
-        this.counter++
+      } else {
+        if(this.matrix[idx]==this.counter-this.size) {
+          if(this.counter>this.limit) this.$set(this.matrix, idx, '')
+          else this.$set(this.matrix, idx, this.counter)
+          this.counter++
+        }
       }
     },
     populateMatrix(){
       this.counter = 1
+      if(this.reverse) this.counter = this.limit
       for(let i=0;i<this.size;++i) {
-        this.setToRandomCoords(i+1)
+        this.setToRandomCoords(this.counter)
+        if(this.reverse) this.counter--
+        else this.counter++
       }
     },
     setToRandomCoords(value){
@@ -58,7 +69,6 @@ export default {
       this.matrix[i] = value
     },
     initMatrix() {
-      this.size = this.dimension*this.dimension
       this.matrix = []
       for(let r=0;r<this.dimension;++r) {
         for(let c=0;c<this.dimension;++c) {
@@ -71,10 +81,16 @@ export default {
   },
   watch: {
     dimension() {
+      this.size = this.dimension*this.dimension
       this.initMatrix()
     },
     limit() {
       this.initMatrix()
+    }
+  },
+  computed: {
+    limit() {
+      return Math.pow(this.dimension, this.dimension)
     }
   },
   created() {
@@ -86,7 +102,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .cell {
-  font-size: 5em;
+  font-size: 3em;
 }
 
 .grid {
