@@ -14,7 +14,7 @@
         table.grid(width='100%')
           tr(v-for='(row, ridx) in matrix.length/dimension')
             td(v-for='(col, cidx) in matrix.length/dimension')
-              b-button.w-100.p-4(@click='clickCell(ridx, cidx)' :variant='matrix[ridx*dimension+cidx]>0?"success":"warning"')
+              b-button.w-100.p-4(@touchstart='clickCell(ridx, cidx)' @click='clickCell(ridx, cidx)' :variant='matrix[ridx*dimension+cidx]>0?"success":"warning"')
                 span.cell(v-if='matrix[ridx*dimension+cidx]>0') {{matrix[ridx*dimension+cidx]}}
                 span.cell(v-else) -
       b-col()
